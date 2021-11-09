@@ -9,6 +9,7 @@ const modal = () => {
             
         windows.forEach(item => {
             item.style.display = 'none';
+            item.classList.add('animated', 'fadeIn'); //Анимация из Animate.css
         });
 
         modal.style.display = "block";
@@ -100,7 +101,7 @@ const modal = () => {
 
     function showModalByScroll(selector) {
         window.addEventListener('scroll', () => {
-            if (!btnPressed && (windows.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight)) {
+            if (!btnPressed && (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight)) {
                 document.querySelector(selector).click();
                 // window.removeEventListener('scroll', showModalByScroll);
             }
