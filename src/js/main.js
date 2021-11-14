@@ -1,5 +1,6 @@
 import modal from './modules/modal';
 import sliders from './modules/slider';
+import forms from './modules/forms';
 
 window.addEventListener('DOMContentLoaded', function() {
     "use strict";
@@ -7,6 +8,7 @@ window.addEventListener('DOMContentLoaded', function() {
     modal();
     sliders('.feedback-slider-item', '', '.main-prev-btn', '.main-next-btn');
     sliders('.main-slider-item', 'vertical');
+    forms();
     // let modalState = {};
 
     // changeModalState(modalState);
