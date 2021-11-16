@@ -2,6 +2,78 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/js/modules/calc.js":
+/*!********************************!*\
+  !*** ./src/js/modules/calc.js ***!
+  \********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+const calc = (state, size, material, options, promocode, result) => {
+  const sizeBlock = document.querySelector(size),
+        materialBlock = document.querySelector(material),
+        optionsBlock = document.querySelector(options),
+        promocodeBlock = document.querySelector(promocode),
+        resultBlock = document.querySelector(result);
+  let sum = 0;
+
+  const calcFunc = () => {
+    sum = Math.round(+sizeBlock.value * +materialBlock.value + +optionsBlock.value);
+
+    if (sizeBlock.value == '' || materialBlock.value == '') {
+      resultBlock.textContent = "Пожалуйста, выберите размер и материал картины";
+    } else if (promocodeBlock.value === 'IWANTPOPART') {
+      resultBlock.textContent = Math.round(sum * 0.7);
+      state.result = Math.round(sum * 0.7);
+      console.log(state);
+    } else {
+      resultBlock.textContent = sum;
+      state.result = sum;
+      console.log(state);
+    }
+  };
+
+  sizeBlock.addEventListener('change', calcFunc);
+  materialBlock.addEventListener('change', calcFunc);
+  optionsBlock.addEventListener('change', calcFunc);
+  promocodeBlock.addEventListener('input', calcFunc);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (calc);
+
+/***/ }),
+
+/***/ "./src/js/modules/changeCalcState.js":
+/*!*******************************************!*\
+  !*** ./src/js/modules/changeCalcState.js ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+const changeCalcState = (state, size, material, options, promocode, result) => {
+  const materialBlock = document.querySelector(material),
+        optionsBlock = document.querySelector(options),
+        promocodeBlock = document.querySelector(promocode),
+        sizeBlock = document.querySelector(size),
+        calcForm = document.querySelector('.calc_form');
+
+  function bindActionToElem(event, elem, prop) {
+    elem.addEventListener(event, () => {
+      state[prop] = elem.value;
+      console.log(state);
+    });
+  }
+
+  bindActionToElem('change', sizeBlock, 'sizeBlock');
+  bindActionToElem('change', materialBlock, 'materialBlock');
+  bindActionToElem('change', optionsBlock, 'optionsBlock');
+  bindActionToElem('input', promocodeBlock, 'promocodeBlock');
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (changeCalcState);
+
+/***/ }),
+
 /***/ "./src/js/modules/checkTextInputs.js":
 /*!*******************************************!*\
   !*** ./src/js/modules/checkTextInputs.js ***!
@@ -31,14 +103,13 @@ const checkTextInputs = selector => {
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
-// import {postData} from '../services/services';
-// import checkNumInputs from './checkNumInputs.js';
-function forms() {
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./src/js/services/services.js");
+
+
+function forms(state) {
   const form = document.querySelectorAll('form'),
         inputs = document.querySelectorAll('input'),
-        upload = document.querySelectorAll('[name="upload"]'),
-        windows = document.querySelectorAll('[data-modal]'); // checkNumInputs('input[name="user_phone"]');
-
+        upload = document.querySelectorAll('[name="upload"]');
   const message = {
     loading: 'Загрузка...',
     success: 'Спасибо! Скоро мы с вами свяжемся',
@@ -50,14 +121,6 @@ function forms() {
   const path = {
     designer: 'assets/server.php',
     question: 'assets/question.php'
-  };
-
-  const postData = async (url, data) => {
-    let res = await fetch(url, {
-      method: "POST",
-      body: data
-    });
-    return await res.text();
   };
 
   const clearInputs = () => {
@@ -99,13 +162,26 @@ function forms() {
       textMessage.textContent = message.loading;
       statusMessage.appendChild(textMessage);
       const formData = new FormData(item);
+
+      if (state) {
+        for (let key in state) {
+          formData.append(key, state[key]);
+        }
+      }
+
       let api;
       item.closest('.popup-design') || item.classList.contains('calc_form') ? api = path.designer : api = path.question;
       console.log(api);
-      postData(api, formData).then(res => {
+      (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.postData)(api, formData).then(res => {
         console.log(res);
         statusImg.setAttribute('src', message.ok);
         statusMessage.textContent = message.success;
+
+        for (let key in state) {
+          if (state.hasOwnProperty(key)) {
+            delete state[key];
+          }
+        }
       }).catch(() => {
         statusImg.setAttribute('src', message.fail);
         statusMessage.textContent = message.failure;
@@ -117,7 +193,7 @@ function forms() {
           item.style.display = 'block';
           item.classList.remove('fadeOutUp');
           item.classList.add('fadeInUp');
-        }, 50000);
+        }, 5000);
       });
     });
   });
@@ -322,19 +398,72 @@ const modal = () => {
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
-const showMoreStyles = (trigger, styles) => {
-  const cards = document.querySelectorAll(styles),
-        btn = document.querySelector(trigger);
-  cards.forEach(card => {
-    card.classList.add('animated', 'fadeInUp');
-  });
-  btn.addEventListener('click', () => {
-    cards.forEach(card => {
-      card.classList.remove('hidden-lg', 'hidden-md', 'hidden-sm', 'hidden-xs');
-      card.classList.add('col-sm-3', 'col-sm-offset-0', 'col-xs-10', 'col-xs-offset-1');
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./src/js/services/services.js");
+
+
+const showMoreStyles = (trigger, wrap) => {
+  const btn = document.querySelector(trigger),
+        wrapper = document.querySelector(wrap); // cards.forEach(card => {
+  //     card.classList.add('animated', 'fadeInUp');
+  // });
+  // btn.addEventListener('click', () => {
+  //     cards.forEach(card => {
+  //         card.classList.remove('hidden-lg', 'hidden-md', 'hidden-sm', 'hidden-xs');
+  //         card.classList.add('col-sm-3', 'col-sm-offset-0', 'col-xs-10', 'col-xs-offset-1');
+  //     });
+  //     // btn.style.display = 'none';
+  //     btn.remove();
+  // });
+
+  btn.addEventListener('click', function () {
+    let statusMessage = document.createElement('div');
+    statusMessage.classList.add('status');
+    wrapper.appendChild(statusMessage);
+    (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResource)('http://localhost:3000/styles') // getResource('assets/db.json')
+    .then(res => {
+      console.log(res);
+      createCards(res); // console.log(res.styles);
+      // createCards(res.styles);
+
+      btn.remove();
+    }).catch(error => {
+      console.log(error);
+      statusMessage.textContent = 'Что-то пошло не так...';
+    }).finally(() => {
+      setTimeout(() => {
+        if (statusMessage) {
+          statusMessage.textContent = '';
+        }
+      }, 5000);
     });
-    btn.style.display = 'none';
   });
+
+  function createCards(res) {
+    res.forEach(_ref => {
+      let {
+        src,
+        title,
+        link
+      } = _ref;
+      let card = document.createElement('div');
+      card.classList.add('animated', 'fadeInUp', 'col-sm-3', 'col-sm-offset-0', 'col-xs-10', 'col-xs-offset-1');
+      card.innerHTML = `
+            <div class="styles-block">
+                <img src=${src} alt="style">
+                <h4>${title}</h4>
+                <a href=${link}>Подробнее</a>
+            </div>
+            `;
+      wrapper.appendChild(card);
+    });
+  } // <div class="hidden-lg hidden-md hidden-sm hidden-xs styles-2">
+  // <div class=styles-block>
+  //     <img src=assets/img/styles-5.jpg alt>
+  //     <h4>Пастелью</h4>
+  //     <a href="#">Подробнее</a>
+  // </div>
+  // </div>
+
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (showMoreStyles);
@@ -416,6 +545,40 @@ const sliders = (slides, dir, prev, next) => {
 
 /* harmony default export */ __webpack_exports__["default"] = (sliders);
 
+/***/ }),
+
+/***/ "./src/js/services/services.js":
+/*!*************************************!*\
+  !*** ./src/js/services/services.js ***!
+  \*************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "postData": function() { return /* binding */ postData; },
+/* harmony export */   "getResource": function() { return /* binding */ getResource; }
+/* harmony export */ });
+const postData = async (url, data) => {
+  let res = await fetch(url, {
+    method: "POST",
+    body: data
+  });
+  return await res.text();
+};
+
+const getResource = async url => {
+  let res = await fetch(url);
+
+  if (!res.ok) {
+    throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+  }
+
+  return await res.json();
+};
+
+
+
+
 /***/ })
 
 /******/ 	});
@@ -445,6 +608,23 @@ const sliders = (slides, dir, prev, next) => {
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	!function() {
 /******/ 		// define __esModule on exports
@@ -470,6 +650,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_mask__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/mask */ "./src/js/modules/mask.js");
 /* harmony import */ var _modules_checkTextInputs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/checkTextInputs */ "./src/js/modules/checkTextInputs.js");
 /* harmony import */ var _modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/showMoreStyles */ "./src/js/modules/showMoreStyles.js");
+/* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/calc */ "./src/js/modules/calc.js");
+/* harmony import */ var _modules_changeCalcState__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/changeCalcState */ "./src/js/modules/changeCalcState.js");
+
+
 
 
 
@@ -479,14 +663,22 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', function () {
   "use strict";
 
+  let calcState = {}; // const sizeBlock = document.querySelector('#size');
+  // sizeBlock.addEventListener('change', () => {
+  //     calcState['sizeBlock'] = sizeBlock.textContent;
+  //         console.log(calcState);
+  //     });
+
+  (0,_modules_changeCalcState__WEBPACK_IMPORTED_MODULE_7__["default"])(calcState, '#size', '#material', '#options', '.promocode', '.calc-price');
   (0,_modules_modal__WEBPACK_IMPORTED_MODULE_0__["default"])();
   (0,_modules_slider__WEBPACK_IMPORTED_MODULE_1__["default"])('.feedback-slider-item', '', '.main-prev-btn', '.main-next-btn');
   (0,_modules_slider__WEBPACK_IMPORTED_MODULE_1__["default"])('.main-slider-item', 'vertical');
-  (0,_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])();
+  (0,_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])(calcState);
   (0,_modules_mask__WEBPACK_IMPORTED_MODULE_3__["default"])('[name="phone"]');
   (0,_modules_checkTextInputs__WEBPACK_IMPORTED_MODULE_4__["default"])('[name="name"]');
   (0,_modules_checkTextInputs__WEBPACK_IMPORTED_MODULE_4__["default"])('[name="message"]');
-  (0,_modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__["default"])('.button-styles', '.styles-2');
+  (0,_modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__["default"])('.button-styles', '#styles .row');
+  (0,_modules_calc__WEBPACK_IMPORTED_MODULE_6__["default"])(calcState, '#size', '#material', '#options', '.promocode', '.calc-price');
 });
 }();
 /******/ })()

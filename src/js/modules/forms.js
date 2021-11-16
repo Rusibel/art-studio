@@ -1,12 +1,9 @@
-// import {postData} from '../services/services';
-// import checkNumInputs from './checkNumInputs.js';
+import {postData} from '../services/services';
 
-function forms(){
+function forms(state){
     const form = document.querySelectorAll('form'),
           inputs = document.querySelectorAll('input'),
-          upload = document.querySelectorAll('[name="upload"]'),
-          windows = document.querySelectorAll('[data-modal]');
-    // checkNumInputs('input[name="user_phone"]');
+          upload = document.querySelectorAll('[name="upload"]');
 
     const message = {
         loading: 'Загрузка...',
@@ -20,18 +17,6 @@ function forms(){
     const path = {
         designer: 'assets/server.php',
         question: 'assets/question.php'
-    };
-
-
-
-    const postData = async (url, data) => {
-
-        let res = await fetch(url, {
-            method: "POST",
-            body: data
-        });
-
-        return await res.text();
     };
 
     const clearInputs = () => {
@@ -81,6 +66,12 @@ function forms(){
             statusMessage.appendChild(textMessage);
 
             const formData = new FormData(item);
+            if (state) {
+                for (let key in state) {
+                    formData.append(key, state[key]);
+                }
+            }
+
             let api;
 
             item.closest('.popup-design') || item.classList.contains('calc_form') ? api = path.designer : api = path.question;
@@ -91,7 +82,11 @@ function forms(){
                     console.log(res);
                     statusImg.setAttribute('src', message.ok);
                     statusMessage.textContent = message.success;
-
+                    for(let key in state) {
+                        if(state.hasOwnProperty(key)) {
+                            delete state[key];
+                        }
+                    }
                 })
                 .catch(() => {
                     statusImg.setAttribute('src', message.fail);
@@ -105,7 +100,7 @@ function forms(){
                         item.style.display = 'block';
                         item.classList.remove('fadeOutUp');
                         item.classList.add('fadeInUp');
-                    }, 50000);
+                    }, 5000);
                 });
         });
     });

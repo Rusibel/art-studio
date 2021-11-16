@@ -4,16 +4,30 @@ import forms from './modules/forms';
 import mask from './modules/mask';
 import checkTextInputs from './modules/checkTextInputs';
 import showMoreStyles from './modules/showMoreStyles';
+import calc from './modules/calc';
+import changeCalcState from './modules/changeCalcState';
 
 window.addEventListener('DOMContentLoaded', function() {
     "use strict";
 
+    let calcState = {};
+    // const sizeBlock = document.querySelector('#size');
+    // sizeBlock.addEventListener('change', () => {
+    //     calcState['sizeBlock'] = sizeBlock.textContent;
+    //         console.log(calcState);
+    //     });
+
+
+    changeCalcState(calcState, '#size', '#material', '#options', '.promocode', '.calc-price');
+
+
     modal();
     sliders('.feedback-slider-item', '', '.main-prev-btn', '.main-next-btn');
     sliders('.main-slider-item', 'vertical');
-    forms();
+    forms(calcState);
     mask('[name="phone"]');
     checkTextInputs('[name="name"]');
     checkTextInputs('[name="message"]');
-    showMoreStyles('.button-styles', '.styles-2');
+    showMoreStyles('.button-styles', '#styles .row');
+    calc(calcState, '#size', '#material', '#options', '.promocode', '.calc-price');
 });
