@@ -1,3 +1,5 @@
+import {getResource} from '../services/services';
+
 const calc = (state, size, material, options, promocode, result) => {
     const sizeBlock = document.querySelector(size),
           materialBlock = document.querySelector(material),
@@ -15,13 +17,39 @@ const calc = (state, size, material, options, promocode, result) => {
         } else if (promocodeBlock.value === 'IWANTPOPART') {
             resultBlock.textContent = Math.round(sum * 0.7);
             state.result = Math.round(sum * 0.7);
-            console.log(state);
         } else {
             resultBlock.textContent = sum;
             state.result = sum;
-            console.log(state);
         }
     };
+
+    const getPrice = (param, options) => {
+        let statusMessage = document.createElement('div');
+        statusMessage.classList.add('status');
+        resultBlock.parentNode.appendChild(statusMessage);
+
+        getResource('assets/db.json')
+            .then(res => {
+                console.log(res.param);
+                res.param.forEach((key, val) => {
+                    if(key == options.textContent){
+                        options.setAttribute('value', val)
+                    }
+                });
+            })
+            .catch(error => {
+                console.log(error);
+                statusMessage.textContent = 'Что-то пошло не так...';
+               
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    if (statusMessage) {
+                        statusMessage.textContent = '';
+                    }
+                }, 5000);
+            });
+    });
 
     sizeBlock.addEventListener('change', calcFunc);
     materialBlock.addEventListener('change', calcFunc);

@@ -26,13 +26,13 @@ const showMoreStyles = (trigger, wrap) => {
         wrapper.appendChild(statusMessage);
 
 
-        getResource('http://localhost:3000/styles')
-        // getResource('assets/db.json')
+        // getResource('http://localhost:3000/styles')
+        getResource('assets/db.json')
             .then(res => {
-                console.log(res);
-                createCards(res);
-                // console.log(res.styles);
-                // createCards(res.styles);
+                // console.log(res);
+                // createCards(res);
+                console.log(res.styles);
+                createCards(res.styles);
                 btn.remove();
             })
             .catch(error => {
