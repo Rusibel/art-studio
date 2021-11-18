@@ -12,11 +12,16 @@ const calc = (state, size, material, options, promocode, result) => {
         priceList = {};
 
     const calcFunc = () => {
-        sum = Math.round((+sizeBlock.value) * (+materialBlock.value) + (+optionsBlock.value));
+        console.log(sizeBlock.dataset.option);
+        console.log(materialBlock.dataset.option);
+        console.log(optionsBlock.dataset.option);
+
+        sum = Math.round((+sizeBlock.dataset.option) * (+materialBlock.dataset.option) + (+optionsBlock.dataset.option));
 
         if (sizeBlock.value == '' || materialBlock.value == '') {
             resultBlock.textContent = "Пожалуйста, выберите размер и материал картины";
         } else if (priceList.promocode.indexOf(promocodeBlock.value) != -1) {
+            console.log(priceList.promocode);
             resultBlock.textContent = Math.round(sum * 0.7);
             state.result = Math.round(sum * 0.7);
         } else {
@@ -24,22 +29,14 @@ const calc = (state, size, material, options, promocode, result) => {
             state.result = sum;
         }
     };
-    const setValue = (option, block) => {
-        let el = block;
-        el.addEventListener('change', function(e){
-            let value = e.target.value;
-            if(value === 'option value'){
-                    location.href = '';  // ссылка для редеректа
+    const setValue = (e, opt) => {
+        const val = e.target.value;
+        console.log(val);
+        for (let key in opt) {
+            if(val == key){
+                console.log(key, opt[key], 'match');
+                e.target.dataset.option = opt[key];
             }
-        });
-        const {size, material, options} = priceList;
-        for (let key in size) {
-            console.log(key);
-            console.log(sizeBlock.value);
-            if(size.key == sizeBlock.textContent){
-                console.log(key);
-                console.log(sizeBlock.value);
-            } 
 
         }
     };
@@ -53,12 +50,22 @@ const calc = (state, size, material, options, promocode, result) => {
         getResource('assets/db.json')
             .then(res => {
                 priceList = res;
-                console.log(priceList);
+                const {size, material, options, promocode} = res;
+                console.log(promocode);
+
                 calcForm.removeEventListener('mouseover', getPrice);
-                sizeBlock.addEventListener('change', calcFunc);
-                sizeBlock.addEventListener('change', setValue);
-                materialBlock.addEventListener('change', calcFunc);
-                optionsBlock.addEventListener('change', calcFunc);
+                sizeBlock.addEventListener('change', async (e) => {
+                    await setValue(e, size);
+                    calcFunc();
+                });
+                materialBlock.addEventListener('change', async (e) => {
+                    await setValue(e, material);
+                    calcFunc();
+                });
+                optionsBlock.addEventListener('change', async (e) => {
+                    await setValue(e, options);
+                    calcFunc();
+                });
                 promocodeBlock.addEventListener('input', calcFunc);
             })
             .catch(error => {

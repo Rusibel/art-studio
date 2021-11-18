@@ -39,6 +39,6 @@
         "Экспресс-изготовление": "2000",
         "Доставка готовых работ": "500"
     },
-    "promocode": ["'IWANTPOPART'"]
+    "promocode": ["IWANTPOPART", "DRY"]
 
 }
