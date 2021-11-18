@@ -151,6 +151,77 @@ const checkTextInputs = selector => {
 
 /***/ }),
 
+/***/ "./src/js/modules/filter.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/filter.js ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+function filter(filterSelector, filterContentSelector, filterParentSelector, activeClass) {
+  for (var _len = arguments.length, portfolioNoClasses = new Array(_len > 4 ? _len - 4 : 0), _key = 4; _key < _len; _key++) {
+    portfolioNoClasses[_key - 4] = arguments[_key];
+  }
+
+  const filter = document.querySelectorAll(filterSelector),
+        filterContent = document.querySelectorAll(filterContentSelector),
+        filterParent = document.querySelector(filterParentSelector),
+        portfolioNoBlock = document.querySelector('.portfolio-no');
+
+  function hideTabContent() {
+    portfolioNoBlock.style.display = 'none';
+    filterContent.forEach(item => {
+      item.style.display = 'none';
+    });
+    filter.forEach(item => {
+      if (item.classList.contains(activeClass)) {
+        item.classList.remove(activeClass);
+      }
+    });
+  }
+
+  function showTabContent() {
+    let i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    filter[i].classList.add(activeClass);
+    let activeClassName = filter[i].className;
+    console.log(portfolioNoClasses);
+
+    if (activeClassName.replace(/\s.*/, '').indexOf(portfolioNoClasses) != -1) {
+      portfolioNoBlock.style.display = 'block';
+    } else {
+      portfolioNoBlock.style.display = 'none';
+      filterContent.forEach(item => {
+        if (item.classList.contains(activeClassName.replace(/\s.*/, ''))) {
+          item.style.display = 'block';
+        }
+      });
+    }
+  }
+
+  hideTabContent();
+  showTabContent();
+  filterParent.addEventListener('click', function (event) {
+    const target = event.target;
+
+    if (target) {
+      event.preventDefault();
+    }
+
+    if (target) {
+      filter.forEach((item, i) => {
+        if (target == item || target.parentElement == item) {
+          hideTabContent();
+          showTabContent(i);
+        }
+      });
+    }
+  });
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (filter);
+
+/***/ }),
+
 /***/ "./src/js/modules/forms.js":
 /*!*********************************!*\
   !*** ./src/js/modules/forms.js ***!
@@ -707,6 +778,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/showMoreStyles */ "./src/js/modules/showMoreStyles.js");
 /* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/calc */ "./src/js/modules/calc.js");
 /* harmony import */ var _modules_changeCalcState__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/changeCalcState */ "./src/js/modules/changeCalcState.js");
+/* harmony import */ var _modules_filter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/filter */ "./src/js/modules/filter.js");
+
 
 
 
@@ -734,6 +807,7 @@ window.addEventListener('DOMContentLoaded', function () {
   (0,_modules_checkTextInputs__WEBPACK_IMPORTED_MODULE_4__["default"])('[name="message"]');
   (0,_modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__["default"])('.button-styles', '#styles .row');
   (0,_modules_calc__WEBPACK_IMPORTED_MODULE_6__["default"])(calcState, '#size', '#material', '#options', '.promocode', '.calc-price');
+  (0,_modules_filter__WEBPACK_IMPORTED_MODULE_8__["default"])('.portfolio-menu > li', '.portfolio-block', '.portfolio-menu', 'active', ['grandmother', 'granddad']);
 });
 }();
 /******/ })()
