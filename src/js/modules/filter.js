@@ -2,13 +2,19 @@ function filter(filterSelector, filterContentSelector, filterParentSelector, act
     const filter = document.querySelectorAll(filterSelector),
           filterContent = document.querySelectorAll(filterContentSelector),
           filterParent = document.querySelector(filterParentSelector),
-          portfolioNoBlock = document.querySelector('.portfolio-no');
+          portfolioNoBlock = document.querySelector('.portfolio-no'),
+          no = portfolioNoClasses;
 
     function hideTabContent() {
 
         portfolioNoBlock.style.display = 'none';
+        // portfolioNoBlock.classList.remove('animated', 'zoomIn');
+        // portfolioNoBlock.classList.add('animated', 'zoomOut');
         
         filterContent.forEach(item => {
+            
+            // item.classList.remove('animated', 'zoomIn');
+            // item.classList.add('animated', 'zoomOut');
             item.style.display = 'none';
         });
 
@@ -21,16 +27,19 @@ function filter(filterSelector, filterContentSelector, filterParentSelector, act
 
     function showTabContent(i = 0) {
         filter[i].classList.add(activeClass);
-        let activeClassName = filter[i].className;
-        console.log(portfolioNoClasses);
-
-        if (activeClassName.replace(/\s.*/, '').indexOf(portfolioNoClasses) != -1) {
+        let activeClassName = filter[i].className.replace(/\s.*/, '');
+ 
+        if (no.some(elem => elem == activeClassName)) {
             portfolioNoBlock.style.display = 'block';
+            // portfolioNoBlock.classList.remove('animated', 'zoomOut');
+            portfolioNoBlock.classList.add('animated', 'zoomIn');
         } else {
             portfolioNoBlock.style.display = 'none';
             filterContent.forEach(item => {
-                if (item.classList.contains(activeClassName.replace(/\s.*/, ''))){
+                if (item.classList.contains(activeClassName)){
                     item.style.display = 'block';
+                    // item.classList.remove('animated', 'zoomOut');
+                    item.classList.add('animated', 'zoomIn');
                 }
             });
         }
@@ -45,11 +54,13 @@ function filter(filterSelector, filterContentSelector, filterParentSelector, act
         if (target){
             event.preventDefault();
         }
-        if (target) {
+        if (target && target.tagName == "LI") {
             filter.forEach((item, i) => {
                 if ((target == item) || (target.parentElement == item)) {
                     hideTabContent();
-                    showTabContent(i);
+                    // setTimeout(() => {
+                        showTabContent(i);
+                    // }, 0);
                 }
                 
             });

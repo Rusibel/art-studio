@@ -166,11 +166,16 @@ function filter(filterSelector, filterContentSelector, filterParentSelector, act
   const filter = document.querySelectorAll(filterSelector),
         filterContent = document.querySelectorAll(filterContentSelector),
         filterParent = document.querySelector(filterParentSelector),
-        portfolioNoBlock = document.querySelector('.portfolio-no');
+        portfolioNoBlock = document.querySelector('.portfolio-no'),
+        no = portfolioNoClasses;
 
   function hideTabContent() {
-    portfolioNoBlock.style.display = 'none';
+    portfolioNoBlock.style.display = 'none'; // portfolioNoBlock.classList.remove('animated', 'zoomIn');
+    // portfolioNoBlock.classList.add('animated', 'zoomOut');
+
     filterContent.forEach(item => {
+      // item.classList.remove('animated', 'zoomIn');
+      // item.classList.add('animated', 'zoomOut');
       item.style.display = 'none';
     });
     filter.forEach(item => {
@@ -183,16 +188,19 @@ function filter(filterSelector, filterContentSelector, filterParentSelector, act
   function showTabContent() {
     let i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     filter[i].classList.add(activeClass);
-    let activeClassName = filter[i].className;
-    console.log(portfolioNoClasses);
+    let activeClassName = filter[i].className.replace(/\s.*/, '');
 
-    if (activeClassName.replace(/\s.*/, '').indexOf(portfolioNoClasses) != -1) {
-      portfolioNoBlock.style.display = 'block';
+    if (no.some(elem => elem == activeClassName)) {
+      portfolioNoBlock.style.display = 'block'; // portfolioNoBlock.classList.remove('animated', 'zoomOut');
+
+      portfolioNoBlock.classList.add('animated', 'zoomIn');
     } else {
       portfolioNoBlock.style.display = 'none';
       filterContent.forEach(item => {
-        if (item.classList.contains(activeClassName.replace(/\s.*/, ''))) {
-          item.style.display = 'block';
+        if (item.classList.contains(activeClassName)) {
+          item.style.display = 'block'; // item.classList.remove('animated', 'zoomOut');
+
+          item.classList.add('animated', 'zoomIn');
         }
       });
     }
@@ -207,11 +215,12 @@ function filter(filterSelector, filterContentSelector, filterParentSelector, act
       event.preventDefault();
     }
 
-    if (target) {
+    if (target && target.tagName == "LI") {
       filter.forEach((item, i) => {
         if (target == item || target.parentElement == item) {
-          hideTabContent();
-          showTabContent(i);
+          hideTabContent(); // setTimeout(() => {
+
+          showTabContent(i); // }, 0);
         }
       });
     }
@@ -517,6 +526,58 @@ const modal = () => {
 
 /***/ }),
 
+/***/ "./src/js/modules/pictureSize.js":
+/*!***************************************!*\
+  !*** ./src/js/modules/pictureSize.js ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+const pictureSize = () => {
+  const wrapper = document.querySelector('.sizes-wrapper'),
+        sizesBlockImg = document.querySelectorAll('.sizes-block > img');
+  console.log(sizesBlockImg);
+
+  function showPic(i) {
+    sizesBlockImg[i].setAttribute("src", `assets/img/sizes-${i + 1}-1.png`);
+    sizesBlockImg[i].style.zIndex = 1;
+    sizesBlockImg[i].style.position = 'relative';
+  }
+
+  function hiddenPic(i) {
+    sizesBlockImg[i].setAttribute("src", `assets/img/sizes-${i + 1}.png`);
+    sizesBlockImg[i].style.zIndex = 0;
+    sizesBlockImg[i].style.position = '';
+  }
+
+  wrapper.addEventListener('mouseover', e => {
+    const target = e.target;
+
+    if (target && target.tagName == "IMG") {
+      sizesBlockImg.forEach((item, i) => {
+        if (target == item) {
+          showPic(i);
+        }
+      });
+    }
+  });
+  wrapper.addEventListener('mouseout', e => {
+    const target = e.target;
+
+    if (target && target.tagName == "IMG") {
+      sizesBlockImg.forEach((item, i) => {
+        if (target == item) {
+          hiddenPic(i);
+        }
+      });
+    }
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (pictureSize);
+
+/***/ }),
+
 /***/ "./src/js/modules/showMoreStyles.js":
 /*!******************************************!*\
   !*** ./src/js/modules/showMoreStyles.js ***!
@@ -779,6 +840,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/calc */ "./src/js/modules/calc.js");
 /* harmony import */ var _modules_changeCalcState__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/changeCalcState */ "./src/js/modules/changeCalcState.js");
 /* harmony import */ var _modules_filter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/filter */ "./src/js/modules/filter.js");
+/* harmony import */ var _modules_pictureSize__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/pictureSize */ "./src/js/modules/pictureSize.js");
+
 
 
 
@@ -807,7 +870,8 @@ window.addEventListener('DOMContentLoaded', function () {
   (0,_modules_checkTextInputs__WEBPACK_IMPORTED_MODULE_4__["default"])('[name="message"]');
   (0,_modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__["default"])('.button-styles', '#styles .row');
   (0,_modules_calc__WEBPACK_IMPORTED_MODULE_6__["default"])(calcState, '#size', '#material', '#options', '.promocode', '.calc-price');
-  (0,_modules_filter__WEBPACK_IMPORTED_MODULE_8__["default"])('.portfolio-menu > li', '.portfolio-block', '.portfolio-menu', 'active', ['grandmother', 'granddad']);
+  (0,_modules_filter__WEBPACK_IMPORTED_MODULE_8__["default"])('.portfolio-menu > li', '.portfolio-block', '.portfolio-menu', 'active', 'grandmother', 'granddad');
+  (0,_modules_pictureSize__WEBPACK_IMPORTED_MODULE_9__["default"])();
 });
 }();
 /******/ })()
