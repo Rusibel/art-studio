@@ -10,6 +10,7 @@ import filter from './modules/filter';
 import pictureSize from './modules/pictureSize';
 import accordion from './modules/accordion';
 import burger from './modules/burger';
+import scrolling from './modules/scrolling';
 
 window.addEventListener('DOMContentLoaded', function() {
     "use strict";
@@ -38,4 +39,5 @@ window.addEventListener('DOMContentLoaded', function() {
     pictureSize();
     accordion('.accordion-heading', '.accordion-block');
     burger('.burger-menu', '.burger');
+    scrolling('.pageup');
 });
