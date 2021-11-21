@@ -3,8 +3,7 @@ const accordion = (triggersSelector, itemsSelector) => {
           blocks = document.querySelectorAll(itemsSelector);
 
     btns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            const target = e.target;
+        btn.addEventListener('click', function() {
             this.classList.toggle('active-style');
             this.nextElementSibling.classList.toggle('active-content');
                 

@@ -9,6 +9,7 @@ import changeCalcState from './modules/changeCalcState';
 import filter from './modules/filter';
 import pictureSize from './modules/pictureSize';
 import accordion from './modules/accordion';
+import burger from './modules/burger';
 
 window.addEventListener('DOMContentLoaded', function() {
     "use strict";
@@ -36,4 +37,5 @@ window.addEventListener('DOMContentLoaded', function() {
     filter('.portfolio-menu > li', '.portfolio-block', '.portfolio-menu', 'active', 'grandmother', 'granddad');
     pictureSize();
     accordion('.accordion-heading', '.accordion-block');
+    burger('.burger-menu', '.burger');
 });

@@ -13,8 +13,7 @@ const accordion = (triggersSelector, itemsSelector) => {
   const btns = document.querySelectorAll(triggersSelector),
         blocks = document.querySelectorAll(itemsSelector);
   btns.forEach(btn => {
-    btn.addEventListener('click', function (e) {
-      const target = e.target;
+    btn.addEventListener('click', function () {
       this.classList.toggle('active-style');
       this.nextElementSibling.classList.toggle('active-content');
 
@@ -49,6 +48,35 @@ const accordion = (triggersSelector, itemsSelector) => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (accordion);
+
+/***/ }),
+
+/***/ "./src/js/modules/burger.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/burger.js ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+const burger = (menuSelector, burgerSelector) => {
+  const menuElem = document.querySelector(menuSelector),
+        burgerElem = document.querySelector(burgerSelector);
+  menuElem.style.display = 'none';
+  burgerElem.addEventListener('click', () => {
+    if (menuElem.style.display == "none" && window.screen.availWidth < 992) {
+      menuElem.style.display = 'block';
+    } else {
+      menuElem.style.display = 'none';
+    }
+  });
+  window.addEventListener('resize', () => {
+    if (window.screen.availWidth > 992) {
+      menuElem.style.display = 'none';
+    }
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (burger);
 
 /***/ }),
 
@@ -891,6 +919,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_filter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/filter */ "./src/js/modules/filter.js");
 /* harmony import */ var _modules_pictureSize__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/pictureSize */ "./src/js/modules/pictureSize.js");
 /* harmony import */ var _modules_accordion__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modules/accordion */ "./src/js/modules/accordion.js");
+/* harmony import */ var _modules_burger__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./modules/burger */ "./src/js/modules/burger.js");
+
 
 
 
@@ -924,6 +954,7 @@ window.addEventListener('DOMContentLoaded', function () {
   (0,_modules_filter__WEBPACK_IMPORTED_MODULE_8__["default"])('.portfolio-menu > li', '.portfolio-block', '.portfolio-menu', 'active', 'grandmother', 'granddad');
   (0,_modules_pictureSize__WEBPACK_IMPORTED_MODULE_9__["default"])();
   (0,_modules_accordion__WEBPACK_IMPORTED_MODULE_10__["default"])('.accordion-heading', '.accordion-block');
+  (0,_modules_burger__WEBPACK_IMPORTED_MODULE_11__["default"])('.burger-menu', '.burger');
 });
 }();
 /******/ })()
