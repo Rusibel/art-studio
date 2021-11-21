@@ -51,7 +51,6 @@ const calc = (state, size, material, options, promocode, result) => {
             .then(res => {
                 priceList = res;
                 const {size, material, options, promocode} = res;
-                console.log(promocode);
 
                 calcForm.removeEventListener('mouseover', getPrice);
                 sizeBlock.addEventListener('change', async (e) => {

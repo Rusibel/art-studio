@@ -11,17 +11,12 @@ import pictureSize from './modules/pictureSize';
 import accordion from './modules/accordion';
 import burger from './modules/burger';
 import scrolling from './modules/scrolling';
+import drop from './modules/drop';
 
 window.addEventListener('DOMContentLoaded', function() {
     "use strict";
 
     let calcState = {};
-    // const sizeBlock = document.querySelector('#size');
-    // sizeBlock.addEventListener('change', () => {
-    //     calcState['sizeBlock'] = sizeBlock.textContent;
-    //         console.log(calcState);
-    //     });
-
 
     changeCalcState(calcState, '#size', '#material', '#options', '.promocode', '.calc-price');
 
@@ -40,4 +35,5 @@ window.addEventListener('DOMContentLoaded', function() {
     accordion('.accordion-heading', '.accordion-block');
     burger('.burger-menu', '.burger');
     scrolling('.pageup');
+    drop();
 });
